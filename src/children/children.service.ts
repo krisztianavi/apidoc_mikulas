@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChildDto } from './dto/create-child.dto';
 import { UpdateChildDto } from './dto/update-child.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma.service';
 @Injectable()
 export class ChildrenService {
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   create(createChildDto: CreateChildDto) {
     return this.prismaService.child.create({
@@ -18,10 +18,14 @@ export class ChildrenService {
     return this.prismaService.child.findMany();
   }
 
-  findOne(id: number) {
-    return this.prismaService.child.findUnique({
+  async findOne(id: number) {
+    const child = await this.prismaService.child.findUnique({
       where: { id },
     });
+    if (!child) {
+      throw new NotFoundException(`Gyermek nem található ezzel az id-val: ${id}`);
+    }
+    return child;
   }
 
   update(id: number, updateChildDto: UpdateChildDto) {
@@ -31,9 +35,32 @@ export class ChildrenService {
     });
   }
 
-  remove(id: number) {
-    return this.prismaService.child.delete({
-      where: { id },
-    });
+  async remove(id: number) {
+    try {
+      const deletedChild = await this.prismaService.child.delete({
+        where: { id },
+      });
+      return { message: `A gyermek törlődött.`, deletedChild };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        return { message: `A gyermek nem található.` };
+      }
+    }
   }
-}
+
+
+  async removeChildToy(childId: number, toyId: number) {
+    try {
+      return await this.prismaService.childrenAndToys.delete({
+        where: {
+          toyId_childId: { toyId, childId },
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Az adott játék a gyermeknél nem találha.');
+      }
+      throw error;
+    }
+  }
+} 

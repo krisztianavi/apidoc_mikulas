@@ -27,8 +27,11 @@ export class ChildrenController {
     return this.childrenService.update(+id, updateChildDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.childrenService.remove(+id);
+  @Delete(':childId/toys/:toyId')
+  removeChildToy(
+    @Param('childId') childId: number,
+    @Param('toyId') toyId: number,
+  ) {
+    return this.childrenService.removeChildToy(+childId, +toyId);
   }
 }

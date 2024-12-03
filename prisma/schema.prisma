@@ -18,7 +18,7 @@ model Toy {
   title String
   material String
   weight Int
-  childs ChildsAndToys[]
+  children ChildrenAndToys[] @relation("ToyToChildren")
 }
 
 model Child {
@@ -26,13 +26,13 @@ model Child {
   name String
   address String
   gob Boolean
-  toys ChildsAndToys[]
+  toys ChildrenAndToys[] @relation("ChildToToys")
 }
 
-model ChildsAndToys{
-  toy Toy @relation(fields: [toyId], references: [id])
+model ChildrenAndToys{
+  toy Toy @relation(fields: [toyId], references: [id], onDelete: Cascade, name: "ToyToChildren")
   toyId Int
-  child Child @relation(fields: [childId], references: [id])
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade, name: "ChildToToys")
   childId Int
 
   @@id([toyId, childId])

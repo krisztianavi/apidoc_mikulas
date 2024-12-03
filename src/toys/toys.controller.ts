@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Put } from '@nestjs/common';
+import { Response } from 'express';
 import { ToysService } from './toys.service';
 import { CreateToyDto } from './dto/create-toy.dto';
 import { UpdateToyDto } from './dto/update-toy.dto';
@@ -23,8 +24,13 @@ export class ToysController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateToyDto: UpdateToyDto) {
-    return this.toysService.update(+id, updateToyDto);
+  async update(@Param('id') id: string, @Body() updateToyDto: UpdateToyDto, @Res() res: Response) {
+    try {
+      const updatedToy = await this.toysService.update(+id, updateToyDto);
+      return res.status(HttpStatus.OK).json({ message: 'Játék frissítve!', updatedToy });
+    } catch (error) {
+      return res.status(HttpStatus.NOT_FOUND).json({ message: `Hiba történt a játék frissítése során: ${error.message}` });
+    }
   }
 
   @Delete(':id')

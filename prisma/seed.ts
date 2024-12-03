@@ -24,7 +24,7 @@ async function main() {
         },
       });
 
-      await prisma.childsAndToys.create({
+      await prisma.childrenAndToys.create({
         data: {
           toyId: toy.id,
           childId: child.id,
