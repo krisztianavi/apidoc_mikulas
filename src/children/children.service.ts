@@ -58,7 +58,7 @@ export class ChildrenService {
       });
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new NotFoundException('Az adott játék a gyermeknél nem találha.');
+        throw new NotFoundException('Az adott játék a gyermeknél nem található.');
       }
       throw error;
     }
