@@ -3,7 +3,13 @@ import { IsIn, IsNumber, IsString, Min } from "class-validator";
 
 const materials = ['Wood', 'Metal', 'Plastic', 'Other', 'Wooden'];
 
+/**
+ * The data required to add a new toy
+ */
 export class CreateToyDto {
+  /**
+   * The name of the toy
+   */
   @IsString()
   @ApiProperty({
     example: 'Frisbee',
@@ -11,6 +17,9 @@ export class CreateToyDto {
   })
   title: string;
 
+  /**
+   * The material of the toy
+   */
   @IsString()
   @IsIn(materials)
   @ApiProperty({
@@ -20,6 +29,9 @@ export class CreateToyDto {
   })
   material: string;
 
+  /**
+   * The weight of the toy in grams
+   */
   @IsNumber()
   @Min(0)
   @ApiProperty({

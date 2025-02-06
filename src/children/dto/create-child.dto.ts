@@ -5,9 +5,6 @@ import { IsString, IsNotEmpty, IsBoolean } from "class-validator";
  * The data required to add a new child
  */
 export class CreateChildDto {
-  /**
-   * The name of the child
-   */
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
